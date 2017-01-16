@@ -21,4 +21,10 @@ public class PersonServiceImpl {
                 .filter(workerPredicate)
                 .collect(Collectors.toList());
         }
-}
+
+    // Make it safer, please. Try to use advantage of MapNpeProtection - find() method
+    // and combine it with Optional's map/flatMap to avoid NPE.
+
+    // And optional improving:
+}   // In addition you can handle the case when company doesn't have workers, adding orElseGet(Collections::emptyList)
+    // or as an alternative - use .orElseThrow(() -> new RuntimeException("The %company% doesn't have workers"))

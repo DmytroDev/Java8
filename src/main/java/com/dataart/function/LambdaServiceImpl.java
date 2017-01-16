@@ -22,6 +22,7 @@ public class LambdaServiceImpl {
     public static void sortString(List<String> data, Comparator<String> comparator) {
         Collections.sort(data, comparator);
     }
+    // Or data.sort(comparator)
 
     public static void sortWorkers(List<Worker> data, Comparator<Worker> comparator) {
         Collections.sort(data, comparator);

@@ -27,6 +27,7 @@ public class AsyncFutureServiceImpl {
         });
         return result.get();
     }
+    // Try to use it thenApply(...) with exceptionally(...)
 
     public static CompletableFuture<List<Worker>> handleFutures(CompletableFuture<Company> companyCompletableFuture, CompletableFuture<Profession> professionCompletableFuture) throws ExecutionException, InterruptedException {
 
@@ -38,6 +39,10 @@ public class AsyncFutureServiceImpl {
                                 .collect(Collectors.toList()));
         return workers;
     }
+    // Look at thenCombine(...) method. Try to use it here.
+    // And two last methods are redundant;
+    // if you want to handle the case where company doesn't have workers -
+    // ...getWorkers().orElseGet(Collections::emptyList)...
 
     private static List<Worker> getWorkers(CompletableFuture<Company> companyCompletableFuture) {
         List<Worker> workers = null;

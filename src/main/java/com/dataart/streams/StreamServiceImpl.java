@@ -63,9 +63,11 @@ public class StreamServiceImpl {
         return words
                 .stream()
                 .filter(capitalLetterPredicate)
-                .map(f -> f.substring(0))
+                .map(f -> f.substring(0)) // What do you mean? Look into substring(int beginIndex = 0) method.
                 .collect(Collectors.toList());
     }
+    // The easiest way is map(String::toUpperCase) the second one -
+    // .map(f -> Character.toUpperCase(f.charAt(0)) + f.substring(1))
 
     public static List<String> concatenationAndToUpperCase(List<String> words1, List<String> words2) {
         return Stream
@@ -74,6 +76,7 @@ public class StreamServiceImpl {
                 .map(w -> w.toUpperCase())
                 .collect(Collectors.toList());
     }
+    // Better solution would be Stream.concat(words1.stream(), words2.stream()).map( to upper case)
 
     public static List<String> sortWordsByLength(List<String> words) {
         Comparator<String> stringComparator = Comparator.comparing(String::length);
@@ -87,9 +90,11 @@ public class StreamServiceImpl {
         return words
                 .parallelStream()
                 .distinct()
-                .sorted((a, b) -> a.compareTo(b))
+                .sorted((a, b) -> a.compareTo(b)) // or String::compareTo
                 .collect(Collectors.toList());
     }
+    // I don't recommend you to use parallelStream() here. Parallel stream has a much higher overhead compared to stream.
+    // So it makes sense to use it if you have an enormous list or you have some performance issue in such place.
 
     public static List<Worker> searchWorkers(List<Company> companies, Profession profession) {
         return companies
