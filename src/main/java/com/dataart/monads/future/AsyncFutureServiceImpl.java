@@ -17,15 +17,12 @@ public class AsyncFutureServiceImpl {
     }
 
     public static Integer handleException(CompletableFuture<String> future) throws ExecutionException, InterruptedException {
-        CompletableFuture<Integer> result = future.handle((r, ex) -> {
-            if (r != null) {
-                return Integer.parseInt(r);
-            } else {
-                ex.printStackTrace();
-                return -1;
-            }
-        });
-        return result.get();
+        return future
+                .thenApply(r -> Integer.parseInt(r))
+                .exceptionally(ex -> {
+                    ex.printStackTrace();
+                    return -1;
+                }).get();
     }
     // Try to use it thenApply(...) with exceptionally(...)
 

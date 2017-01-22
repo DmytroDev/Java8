@@ -4,6 +4,7 @@ import com.dataart.core.data.Company;
 import com.dataart.core.data.Profession;
 import com.dataart.core.data.Worker;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -14,9 +15,9 @@ public class PersonServiceImpl {
     public static List<Worker> getWorkersByCompanyAndProf(MapNpeProtection<String, Company> companyMap, String companyName, Profession profession) {
         Predicate<Worker> workerPredicate = w -> w.getProfession().equals(profession);
         return companyMap
-                .get(companyName)
-                .getWorkers()
-                .get()
+                .find(companyName)
+                .flatMap(Company::getWorkers)
+                .orElseGet(Collections::emptyList)
                 .stream()
                 .filter(workerPredicate)
                 .collect(Collectors.toList());

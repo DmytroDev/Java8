@@ -19,9 +19,9 @@ public class WorkerPredicates {
     }
 
     public static Predicate<Worker> isAgeMoreThanAndProfession(int age, Profession profession) {
-        Predicate<Worker> isAgeMoreThan = p -> p.getAge() > age; // Just a note: you've already had isAgeMoreThan predicate
+        //Predicate<Worker> isAgeMoreThan = p -> p.getAge() > age; // Just a note: you've already had isAgeMoreThan predicate
         Predicate<Worker> isProfession = p -> p.getProfession().equals(profession);
-        return isAgeMoreThan.and(isProfession);
+        return isAgeMoreThan(age).and(isProfession);
     }
 
     public static Predicate<Worker> isAgeMoreThanOrProfession(int age, Profession profession) {

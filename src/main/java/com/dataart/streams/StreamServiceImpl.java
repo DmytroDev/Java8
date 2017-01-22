@@ -59,11 +59,9 @@ public class StreamServiceImpl {
     }
 
     public static List<String> capitalLetter(List<String> words) {
-        Predicate<String> capitalLetterPredicate = p -> p.matches("\\b[A-Z]\\w*\\b");
         return words
                 .stream()
-                .filter(capitalLetterPredicate)
-                .map(f -> f.substring(0)) // What do you mean? Look into substring(int beginIndex = 0) method.
+                .map(f -> Character.toUpperCase(f.charAt(0)) + f.substring(1))
                 .collect(Collectors.toList());
     }
     // The easiest way is map(String::toUpperCase) the second one -
@@ -71,9 +69,8 @@ public class StreamServiceImpl {
 
     public static List<String> concatenationAndToUpperCase(List<String> words1, List<String> words2) {
         return Stream
-                .of(words1, words2)
-                .flatMap(words -> words.stream())
-                .map(w -> w.toUpperCase())
+                .concat(words1.stream(), words2.stream())
+                .map(String::toUpperCase)
                 .collect(Collectors.toList());
     }
     // Better solution would be Stream.concat(words1.stream(), words2.stream()).map( to upper case)
@@ -88,9 +85,9 @@ public class StreamServiceImpl {
 
     public static List<String> excludeDuplicateAndAlphabeticalSort(List<String> words) {
         return words
-                .parallelStream()
+                .stream()
                 .distinct()
-                .sorted((a, b) -> a.compareTo(b)) // or String::compareTo
+                .sorted(String::compareTo) // or String::compareTo
                 .collect(Collectors.toList());
     }
     // I don't recommend you to use parallelStream() here. Parallel stream has a much higher overhead compared to stream.

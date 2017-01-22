@@ -8,10 +8,10 @@ public class MonadLaws {
     private static final Integer value = 42;
     private static Optional<Integer> monadicValue = Optional.of(value);
     private static Function<Integer, Optional<Integer>> function = a -> Optional.of(a * 2);
-    private static Function<Integer, Optional<Integer>> optionalOf = a -> Optional.of(a); // or just Optional::of
+    private static Function<Integer, Optional<Integer>> optionalOf = Optional::of; // or just Optional::of
 
     private static Function<Integer, Optional<Integer>> g = a -> Optional.of(a * 3);
-    private static Function<Integer, Optional<Integer>> function_flatMap_g = a -> Optional.of(a * 6);
+    private static Function<Integer, Optional<Integer>> function_flatMap_g = a -> function.apply(a).flatMap(g);
     // function_flatMap_g should use both - #function and #g in order to satisfy 3rd monad law;
     // if #function or #g is changed, the low won't work. Use the field name as a hint.
 
