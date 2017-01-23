@@ -4,6 +4,7 @@ import com.dataart.core.data.Company;
 import com.dataart.core.data.Profession;
 import com.dataart.core.data.Worker;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -27,37 +28,23 @@ public class AsyncFutureServiceImpl {
     // Try to use it thenApply(...) with exceptionally(...)
 
     public static CompletableFuture<List<Worker>> handleFutures(CompletableFuture<Company> companyCompletableFuture, CompletableFuture<Profession> professionCompletableFuture) throws ExecutionException, InterruptedException {
-
         CompletableFuture<List<Worker>> workers =
-                CompletableFuture.supplyAsync(() -> getWorkers(companyCompletableFuture))
-                        .thenApply(result -> result
-                                .stream()
-                                .filter(w -> w.getProfession().equals(getProfession(professionCompletableFuture)))
-                                .collect(Collectors.toList()));
-        return workers;
+                CompletableFuture.supplyAsync(() -> {
+                    List<Worker> workerList = null;
+                    try {
+                        workerList = companyCompletableFuture.get().getWorkers().orElseGet(Collections::emptyList);
+                    } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                    return workerList;
+                });
+        return workers.thenCombine(professionCompletableFuture,
+                (worker, profession) -> worker.stream()
+                        .filter(w -> w.getProfession().equals(profession))
+                        .collect(Collectors.toList()));
     }
     // Look at thenCombine(...) method. Try to use it here.
     // And two last methods are redundant;
     // if you want to handle the case where company doesn't have workers -
     // ...getWorkers().orElseGet(Collections::emptyList)...
-
-    private static List<Worker> getWorkers(CompletableFuture<Company> companyCompletableFuture) {
-        List<Worker> workers = null;
-        try {
-            workers = companyCompletableFuture.get().getWorkers().get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        return workers;
-    }
-
-    private static Profession getProfession(CompletableFuture<Profession> professionCompletableFuture) {
-        Profession profession = null;
-        try {
-            profession = professionCompletableFuture.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        return profession;
-    }
 }
