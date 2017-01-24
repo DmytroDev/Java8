@@ -43,6 +43,18 @@ public class AsyncFutureServiceImpl {
                         .filter(w -> w.getProfession().equals(profession))
                         .collect(Collectors.toList()));
     }
+    // I'd get rid of the first part, because it is redundant. Method thenCombine allows us to register
+    // a BiFunction callback, which depends on the result of two CompletionStages. So we can add
+    // the obtaining of workers to the function:
+    // return companyCompletableFuture.
+    //         thenCombine(professionCompletableFuture,
+    //                 (company, profession) -> company.getWorkers()
+    //                      .orElseThrow(() -> new IllegalArgumentException("no workers")) or .orElseGet(Collections::emptyList)
+    //                      .stream()
+    //                      .filter(worker -> worker.getProfession().equals(profession))
+    //                      .collect(Collectors.toList()));
+
+
     // Look at thenCombine(...) method. Try to use it here.
     // And two last methods are redundant;
     // if you want to handle the case where company doesn't have workers -
